@@ -18,7 +18,10 @@ export const MarkGame: React.FC = () => {
     // [!] useStateで行っていることは何か。
     // 
     const [gameState, setGameState] = useState<GameState>(initGameState);
+   
 
+
+    
     // [!] useEffectで行っているは何か。
     // 
     useEffect(() => {
