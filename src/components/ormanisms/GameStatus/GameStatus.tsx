@@ -11,15 +11,14 @@ export const GameStatus: React.FC<GameStatusProps> = ({gameState, onGameResetCli
     var draw = gameState.draw;
 
     return <div>
-        <p className='desc'>GameStatus.tsx</p>
-        <div className='small'>
-            {// [!] タグの中で条件と&&でHTML出力がどうなるのか。
-             // 
-            winner == null && !draw
-                && <>現在のプレイヤー：{currentPlayer == Player.Maru
-                ? <>⭕️(まる)</> : <>❌(ばつ)</>}<br /></>}
-            {winner != null && <>{winner}が勝ちました。<br /></>}
-            <div onClick={() => {onGameResetClick();}}>リセット</div>
-        </div>
+        <p className='desc'>ReversiGameStatus.tsx</p>
+            <div className='small'>
+                {winner == null && !draw && (
+                    <>現在のプレイヤー：{currentPlayer === Player.Black ? <>⚫️(黒)</> : <>⚪️(白)</>}<br /></>
+                )}
+                {winner != null && <>{winner}が勝ちました。<br /></>}
+                {draw && <>引き分けです。<br /></>}
+                <div onClick={onGameResetClick}>リセット</div>
+            </div>
     </div>;
 }

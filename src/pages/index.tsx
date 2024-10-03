@@ -7,9 +7,8 @@ const Index = () => {
         </Head>
         <h3>Hello React</h3>
 
-        <a href='./mark-game-v1'>まるばつゲーム(useStateで状態管理)</a><br />
-        <a href='./mark-game-v2'>まるばつゲーム(useReducerで状態管理)</a><br />
-        <a href='./reversi-game-v1'>リバーシゲーム(useReducerで状態管理)</a><br />
+        <a href='./mark-game-v1'>リバーシゲーム(useStateで状態管理)</a><br />
+        <a href='./mark-game-v2'>リバーシゲーム(useReducerで状態管理)</a><br />
         
     </>
   };

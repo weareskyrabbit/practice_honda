@@ -9,9 +9,9 @@ var initEffect = false;
 
 export const MarkGame: React.FC = () => {
     var initGameState = {
-        boardWidth: 3,
-        boardData: ['', '', '', '', '', '', '', '', ''],
-        currentPlayer: Player.Maru,
+        boardWidth: 8,
+        boardData: ['', '', '', '', '', '', '', ''],
+        currentPlayer: Player.Black,
         winner: null,
         draw: false
     };
@@ -56,10 +56,10 @@ export const MarkGame: React.FC = () => {
                         var currentPlayer = gameState.currentPlayer;
                         var boardWidth = gameState.boardWidth;
                         boardData[index] = currentPlayer;
-                        if (currentPlayer == Player.Maru) {
-                            currentPlayer = Player.Batsu;
+                        if (currentPlayer == Player.Black) {
+                            currentPlayer = Player.White;
                         } else {
-                            currentPlayer = Player.Maru;
+                            currentPlayer = Player.Black;
                         }
                         var winner = getWinner(gameState, index);
                         var draw = boardData.filter((cell)=>cell == '').length == 0;
