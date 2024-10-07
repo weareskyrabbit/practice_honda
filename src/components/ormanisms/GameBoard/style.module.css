@@ -1,6 +1,31 @@
+.field {
+    display: flex;
+    justify-content: center; /* 中央に配置 */
+    align-items: center; /* 垂直方向にも中央に配置 */
+    height: 100vh; /* 画面全体の高さを使用 */
+}
+
+.board {
+    background-color: green; /* 盤面の背景色を緑に設定 */
+    border: 2px solid black; /* 盤面の外枠を黒に設定 */
+    border-collapse: collapse; /* 枠線を重ねる */
+    margin: auto; /* 中央に配置 */
+}
+
 .square {
     border: 1px solid #999;
-    height: 32px;
-    width: 32px;
+    height: 50px; /* マスの高さを調整 */
+    width: 50px; /* マスの幅を調整 */
     text-align: center;
+    vertical-align: middle; /* 垂直方向にも中央揃え */
+    font-size: 24px; /* 駒のサイズ */
+    background-color: green; /* 盤面の背景色と同じ色 */
+}
+
+.valid-move {
+    background-color: lightgreen; /* 駒が置けるマスの色を明るく設定 */
+}
+
+.square:hover {
+    background-color: green; /* カーソルが乗ったときに盤面と同じ色に設定 */
 }

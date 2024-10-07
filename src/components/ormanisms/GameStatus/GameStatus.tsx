@@ -17,9 +17,8 @@ export const GameStatus: React.FC<GameStatusProps> = ({gameState, onGameResetCli
                     <>現在のプレイヤー：{currentPlayer === Player.Black ? <>⚫️(黒)</> : <>⚪️(白)</>}<br /></>
                 )}
                 {winner != null && <>{winner}が勝ちました。<br /></>}
-                {draw && <>引き分けです。<br /></>}
+                {draw && winner == null && <>引き分けです。<br /></>}
                 <div onClick={onGameResetClick}>リセット</div>
             </div>
     </div>;
 }
-

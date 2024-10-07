@@ -6,7 +6,7 @@ import { useMarkGame } from '@/providers/MarkGameProvider';
 import { markGameTitle } from './features';
 import style from './style.module.css';
 
-var initEffect = false;
+let initEffect = false; // ここで定義
 
 export const MarkGame: React.FC = () => {
     const { gameState, initMarkGameState, onGameBoardClick } = useMarkGame();

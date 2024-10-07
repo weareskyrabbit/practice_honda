@@ -43,6 +43,19 @@ export const MarkGameProvider: React.FC<{children: ReactNode}> = ({
         // 現在のプレイヤーが置けるマスを取得
         const validMoves = getValidMoves(gameState.boardData, gameState.currentPlayer, gameState.boardWidth);
     
+        if (validMoves.length === 0) {
+            // パスの通知を表示
+            alert('パスする必要があります。');
+            // プレイヤーを交代
+            dispatch({
+                type: ActionType.updateGameState,
+                payload: {
+                    gameState: { ...gameState, currentPlayer: gameState.currentPlayer === Player.Black ? Player.White : Player.Black }
+                }
+            });
+            return;
+        }
+    
         // クリックされたセルが有効な手の中にあり、かつゲームが終了していない場合
         if (validMoves.some(([r, c]) => r === row && c === col) && gameState.winner == null) {
             // 現在のゲーム状態から必要な情報を取得
@@ -59,17 +72,20 @@ export const MarkGameProvider: React.FC<{children: ReactNode}> = ({
             // チェンジ
             currentPlayer = currentPlayer === Player.Black ? Player.White : Player.Black;
     
-            // 盤面が全て埋まったかどうかを判定させる
-            var draw = boardData.flat().filter((cell) => cell === '').length === 0;
+            // 盤面が全て埋まったかどうかを判定
+            const isBoardFull = boardData.flat().every(cell => cell !== '');
     
             // 勝者を決める
-            var winner = draw ? getWinner(gameState) : null;
+            const winner = isBoardFull ? getWinner(gameState) : null;
+    
+            // 引き分けの判定
+            const draw = isBoardFull && winner === null;
     
             // 新しいゲーム状態をディスパッチして更新
             dispatch({
                 type: ActionType.updateGameState,
                 payload: {
-                    gameState: {boardWidth, boardData, currentPlayer, winner, draw}
+                    gameState: { boardWidth, boardData, currentPlayer, winner, draw }
                 }
             });
         } else {
