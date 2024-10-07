@@ -1,23 +1,11 @@
-import { getWinner, isCellEmpty } from "@/components/templates/MarkGame/features";
+import { getWinner, isCellEmpty, flipDiscs, getValidMoves, initialState, GameState, Player } from "@/components/templates/MarkGame/features";
 import React, { useReducer } from "react";
 import { createContext, ReactNode } from "react";
 
-export enum Player {
-    Black = '⚫️',
-    White = '⚪️'
-}
-
-interface MarkGameState {
-    boardWidth: number;
-    boardData: string[];
-    currentPlayer: Player;
-    winner: Player | null;
-    draw: boolean;
-}
 interface MarkGameContext {
-    gameState: MarkGameState,
+    gameState: GameState,
     initMarkGameState: () => void,
-    onGameBoardClick: (index: number) => void
+    onGameBoardClick: (row: number, col: number) => void
 }
 const MarkGameContext = createContext({} as MarkGameContext);
 export const useMarkGame = () => React.useContext(MarkGameContext);
@@ -29,132 +17,74 @@ type Action =
 {
     type: ActionType.updateGameState,
     payload: {
-        gameState: MarkGameState
+        gameState: GameState
     }
 };
 
 export const MarkGameProvider: React.FC<{children: ReactNode}> = ({
     children
 }) => {
-    var firstGameState: MarkGameState = {
-        boardWidth: 8,
-        boardData: Array(64).fill(''),
-        currentPlayer: Player.Black,
-        winner: null,
-        draw: false
-    };
-
-    // 中央に初期配置を設定
-    firstGameState.boardData[27] = Player.White;
-    firstGameState.boardData[28] = Player.Black;
-    firstGameState.boardData[35] = Player.Black;
-    firstGameState.boardData[36] = Player.White;
-
     const initMarkGameState = (() => {
         dispatch({type: ActionType.updateGameState, payload: {
-            gameState: firstGameState
+            gameState: initialState
         }});
     });
 
-    const onGameBoardClick = (index: number) => {
-        console.debug('click index=' + index);
+    const onGameBoardClick = (row: number, col: number) => {
+        console.debug('click row=' + row + ' col=' + col); // クリックされたところをデバッグで出力
+    
+        // 現在のプレイヤーが置けるマスを取得
         const validMoves = getValidMoves(gameState.boardData, gameState.currentPlayer, gameState.boardWidth);
-        if (validMoves.includes(index) && gameState.winner == null) {
+    
+        // クリックされたセルが有効な手の中にあり、かつゲームが終了していない場合
+        if (validMoves.some(([r, c]) => r === row && c === col) && gameState.winner == null) {
+            // 現在のゲーム状態から必要な情報を取得
             var boardData = gameState.boardData;
             var currentPlayer = gameState.currentPlayer;
             var boardWidth = gameState.boardWidth;
-            boardData[index] = currentPlayer;
-            boardData = flipDiscs(boardData, index, currentPlayer, boardWidth);
+    
+            // マスに現在のプレイヤーの駒を置く
+            boardData[row][col] = currentPlayer;
+    
+            // 挟まれた駒をひっくり返す
+            boardData = flipDiscs(boardData, row, col, currentPlayer, boardWidth);
+    
+            // チェンジ
             currentPlayer = currentPlayer === Player.Black ? Player.White : Player.Black;
-            var winner = getWinner(gameState, index);
-            var draw = boardData.filter((cell) => cell === '').length === 0;
-            dispatch({type: ActionType.updateGameState, payload: {
-                gameState: {boardWidth, boardData, currentPlayer, winner, draw}
-            }});                    
+    
+            // 盤面が全て埋まったかどうかを判定させる
+            var draw = boardData.flat().filter((cell) => cell === '').length === 0;
+    
+            // 勝者を決める
+            var winner = draw ? getWinner(gameState) : null;
+    
+            // 新しいゲーム状態をディスパッチして更新
+            dispatch({
+                type: ActionType.updateGameState,
+                payload: {
+                    gameState: {boardWidth, boardData, currentPlayer, winner, draw}
+                }
+            });
         } else {
-            console.debug('invalid index!');
+            console.debug('invalid index!'); // 無効なセルがクリックおされたときのデバッグで出力
         }
     }
+    
 
-    const reducer = (_: MarkGameState, action: Action): MarkGameState => {
+    const reducer = (_: GameState, action: Action): GameState => {
         switch (action.type) {
             case ActionType.updateGameState:
                 return action.payload.gameState;
         }
     }
 
-    const [gameState, dispatch] = useReducer(reducer, firstGameState);
+    const [gameState, dispatch] = useReducer(reducer, initialState);
 
-    return <MarkGameContext.Provider value={{
-        gameState, initMarkGameState, onGameBoardClick
-    }}>
-    {children}
-    </MarkGameContext.Provider>;
+    return (
+        <MarkGameContext.Provider value={{
+            gameState, initMarkGameState, onGameBoardClick
+        }}>
+            {children}
+        </MarkGameContext.Provider>
+    );
 }
-
-const flipDiscs = (boardData: string[], index: number, currentPlayer: Player, boardWidth: number): string[] => {
-    const directions = [
-        -1, 1, // 左右
-        -boardWidth, boardWidth, // 上下
-        -boardWidth - 1, -boardWidth + 1, // 左上、右上
-        boardWidth - 1, boardWidth + 1 // 左下、右下
-    ];
-
-    const opponent = currentPlayer === Player.Black ? Player.White : Player.Black;
-    const newBoardData = [...boardData];
-
-    directions.forEach(direction => {
-        let i = index + direction;
-        const discsToFlip = [];
-
-        while (i >= 0 && i < boardData.length && boardData[i] === opponent) {
-            discsToFlip.push(i);
-            i += direction;
-        }
-
-        if (i >= 0 && i < boardData.length && boardData[i] === currentPlayer) {
-            discsToFlip.forEach(flipIndex => {
-                newBoardData[flipIndex] = currentPlayer;
-            });
-        }
-    });
-
-    return newBoardData;
-};
-
-const getValidMoves = (boardData: string[], currentPlayer: Player, boardWidth: number): number[] => {
-    const directions = [
-        -1, 1, // 左右
-        -boardWidth, boardWidth, // 上下
-        -boardWidth - 1, -boardWidth + 1, // 左上、右上
-        boardWidth - 1, boardWidth + 1 // 左下、右下
-    ];
-
-    const opponent = currentPlayer === Player.Black ? Player.White : Player.Black;
-    const validMoves: number[] = [];
-
-    boardData.forEach((cell, index) => {
-        if (cell !== '') return;
-
-        let isValid = false;
-        directions.forEach(direction => {
-            let i = index + direction;
-            let hasOpponentDisc = false;
-
-            while (i >= 0 && i < boardData.length && boardData[i] === opponent) {
-                hasOpponentDisc = true;
-                i += direction;
-            }
-
-            if (hasOpponentDisc && i >= 0 && i < boardData.length && boardData[i] === currentPlayer) {
-                isValid = true;
-            }
-        });
-
-        if (isValid) {
-            validMoves.push(index);
-        }
-    });
-
-    return validMoves;
-};

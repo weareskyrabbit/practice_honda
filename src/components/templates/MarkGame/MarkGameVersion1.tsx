@@ -34,8 +34,7 @@ export const MarkGame: React.FC = () => {
 
     return <>
         <Head>
-            {// [!] タグの中の{}でHTML出力時に何が出力されるか。
-             // 
+            {
             }
             <title>{markGameTitle()}</title>
         </Head>

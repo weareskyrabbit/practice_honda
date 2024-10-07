@@ -1,3 +1,7 @@
 .field {
     display: flex;
 }
+
+.table {
+    background-color: #90ee90; /* 黄緑色 */
+}

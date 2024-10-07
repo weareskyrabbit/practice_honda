@@ -20,19 +20,17 @@ export const MarkGame: React.FC = () => {
         console.debug('useEffect!');
     }, []);
 
-    return <>
-        <Head>
-            <title>{markGameTitle()}</title>
-        </Head>
-        <p className='desc'>MarkGameVersion2.tsx</p>
-        まるばつゲーム(useReducerで状態管理)
-        <div className={style.field}>
-            <GameBoard gameState={gameState} onGameBoardClick={
-                (index) => onGameBoardClick(index)
-            } />
-            <GameStatus gameState={gameState} onGameResetClick={() => {
-                initMarkGameState(); 
-            }} />
-        </div>
-    </>;
+    return (
+        <>
+            <Head>
+                <title>{markGameTitle()}</title>
+            </Head>
+            <p className='desc'>MarkGameVersion2.tsx</p>
+            リバーシゲーム
+            <div className={style.field}>
+                <GameBoard gameState={gameState} onGameBoardClick={onGameBoardClick} />
+                <GameStatus gameState={gameState} onGameResetClick={initMarkGameState} />
+            </div>
+        </>
+    );
 }
