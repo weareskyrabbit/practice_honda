@@ -24,11 +24,18 @@ type Action =
 export const MarkGameProvider: React.FC<{children: ReactNode}> = ({
     children
 }) => {
-    const initMarkGameState = (() => {
+    const initMarkGameState = () => {
+        const newInitialState = {
+            ...initialState,
+            boardData: initialState.boardData.map(row => [...row])
+        };
+        console.debug('Initializing game state to newInitialState:', newInitialState);
         dispatch({type: ActionType.updateGameState, payload: {
-            gameState: initialState
+            gameState: newInitialState
         }});
-    });
+    };
+    
+    
 
     const onGameBoardClick = (row: number, col: number) => {
         console.debug('click row=' + row + ' col=' + col); // クリックされたところをデバッグで出力
@@ -74,9 +81,11 @@ export const MarkGameProvider: React.FC<{children: ReactNode}> = ({
     const reducer = (_: GameState, action: Action): GameState => {
         switch (action.type) {
             case ActionType.updateGameState:
+                console.debug('Updating game state to:', action.payload.gameState);
                 return action.payload.gameState;
         }
-    }
+    };
+    
 
     const [gameState, dispatch] = useReducer(reducer, initialState);
 

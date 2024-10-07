@@ -22,3 +22,4 @@ export const GameStatus: React.FC<GameStatusProps> = ({gameState, onGameResetCli
             </div>
     </div>;
 }
+
