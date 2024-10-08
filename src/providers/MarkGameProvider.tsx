@@ -27,13 +27,15 @@ export const MarkGameProvider: React.FC<{children: ReactNode}> = ({
     const initMarkGameState = () => {
         const newInitialState = {
             ...initialState,
-            boardData: initialState.boardData.map(row => [...row])
+            boardData: initialState.boardData.map(row => [...row]),
+            currentPlayer: Math.random() < 0.5 ? Player.Black : Player.White // ランダムで先攻を決定
         };
         console.debug('Initializing game state to newInitialState:', newInitialState);
         dispatch({type: ActionType.updateGameState, payload: {
             gameState: newInitialState
         }});
     };
+    
     
     
 

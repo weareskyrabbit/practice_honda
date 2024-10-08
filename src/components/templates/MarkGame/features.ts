@@ -1,36 +1,40 @@
+// プレイヤーの列挙型定義
 export enum Player {
-    Black = '⚫️',
-    White = '⚪️'
+    Black = '⚫️', // 黒プレイヤー
+    White = '⚪️'  // 白プレイヤー
 }
 
+// ゲームの状態を表すインターフェース
 export interface GameState {
-    boardWidth: number;
-    boardData: string[][]; // 二次元配列
-    currentPlayer: Player;
-    winner: Player | null;
-    draw: boolean;
-    // pass: boolean; // パスの状態を追加
+    boardWidth: number; // 盤面の幅
+    boardData: string[][]; // 盤面のデータ（二次元配列）
+    currentPlayer: Player; // 現在のプレイヤー
+    winner: Player | null; // 勝者（まだ決まっていない場合はnull）
+    draw: boolean; // 引き分けかどうか
 }
 
-
+// タイトル
 export const markGameTitle = () => {
     return 'リバーシゲーム';
 }
 
+// 指定されたマスが空かどうかを判定する関数
 export function isCellEmpty(gameState: GameState, row: number, col: number) {
     return gameState.boardData[row][col] === '';
 }
 
-// 二次元配列へ
+// 盤面データをそのまま返す関数（将来的に変換処理を追加する可能性あり）
 export function convertMarkGameCols(boardWidth: number, boardData: string[][]): string[][] {
     return boardData;
 }
 
+// 勝者を判定する関数
 export function getWinner(gameState: GameState): Player | null {
     const boardData = gameState.boardData;
     let blackCount = 0;
     let whiteCount = 0;
 
+    // 各プレイヤーの駒の数をカウント
     boardData.forEach(row => {
         row.forEach(cell => {
             if (cell === Player.Black) blackCount++;
@@ -38,11 +42,13 @@ export function getWinner(gameState: GameState): Player | null {
         });
     });
 
+    // 駒の数が多い方を勝者とする
     if (blackCount > whiteCount) return Player.Black;
     if (whiteCount > blackCount) return Player.White;
     return null; // 引き分けの場合
 }
 
+// 駒をひっくり返す関数
 export const flipDiscs = (boardData: string[][], row: number, col: number, currentPlayer: Player, boardWidth: number): string[][] => {
     const directions = [
         [-1, 0], [1, 0], // 上下
@@ -54,17 +60,20 @@ export const flipDiscs = (boardData: string[][], row: number, col: number, curre
     const opponent = currentPlayer === Player.Black ? Player.White : Player.Black;
     const newBoardData = boardData.map(row => [...row]);
 
+    // 各方向に対して駒をひっくり返す処理を行う
     directions.forEach(([dRow, dCol]) => {
         let r = row + dRow;
         let c = col + dCol;
         const discsToFlip = [];
 
+        // 相手の駒が続く限り進む
         while (r >= 0 && r < boardWidth && c >= 0 && c < boardWidth && boardData[r][c] === opponent) {
             discsToFlip.push([r, c]);
             r += dRow;
             c += dCol;
         }
 
+        // 自分の駒で挟んでいる場合、駒をひっくり返す
         if (r >= 0 && r < boardWidth && c >= 0 && c < boardWidth && boardData[r][c] === currentPlayer) {
             discsToFlip.forEach(([flipRow, flipCol]) => {
                 newBoardData[flipRow][flipCol] = currentPlayer;
@@ -75,6 +84,7 @@ export const flipDiscs = (boardData: string[][], row: number, col: number, curre
     return newBoardData;
 };
 
+// 有効な手を取得する関数
 export const getValidMoves = (boardData: string[][], currentPlayer: Player, boardWidth: number): [number, number][] => {
     const directions = [
         [-1, 0], [1, 0], // 上下
@@ -86,6 +96,7 @@ export const getValidMoves = (boardData: string[][], currentPlayer: Player, boar
     const opponent = currentPlayer === Player.Black ? Player.White : Player.Black;
     const validMoves: [number, number][] = [];
 
+    // 盤面のマスに対して置けるマスかどうかを判定
     boardData.forEach((row, rowIndex) => {
         row.forEach((cell, colIndex) => {
             if (cell !== '') return;
@@ -96,12 +107,14 @@ export const getValidMoves = (boardData: string[][], currentPlayer: Player, boar
                 let c = colIndex + dCol;
                 let hasOpponentDisc = false;
 
+                // 相手の駒が続く限り進む
                 while (r >= 0 && r < boardWidth && c >= 0 && c < boardWidth && boardData[r][c] === opponent) {
                     hasOpponentDisc = true;
                     r += dRow;
                     c += dCol;
                 }
 
+                // 自分の駒で挟んでいる場合、置けるマスとする
                 if (hasOpponentDisc && r >= 0 && r < boardWidth && c >= 0 && c < boardWidth && boardData[r][c] === currentPlayer) {
                     isValid = true;
                 }
@@ -116,19 +129,20 @@ export const getValidMoves = (boardData: string[][], currentPlayer: Player, boar
     return validMoves;
 };
 
+// ゲームの初期状態
 export const initialState: GameState = {
-    boardWidth: 8,
+    boardWidth: 8, // 盤面の幅
     boardData: [
-        ["", "", "", "", "", "", "", ""], // 1行目
-        ["", "", "", "", "", "", "", ""], // 2行目
-        ["", "", "", "", "", "", "", ""], // 3行目
-        ["", "", "", "⚫️", "⚪️", "", "", ""], // 4行目
-        ["", "", "", "⚪️", "⚫️", "", "", ""], // 5行目
-        ["", "", "", "", "", "", "", ""], // 6行目
-        ["", "", "", "", "", "", "", ""], // 7行目
-        ["", "", "", "", "", "", "", ""]  // 8行目
+        ["", "", "", "", "", "", "", ""],
+        ["", "", "", "", "", "", "", ""],
+        ["", "", "", "", "", "", "", ""],
+        ["", "", "", "⚫️", "⚪️", "", "", ""],
+        ["", "", "", "⚪️", "⚫️", "", "", ""],
+        ["", "", "", "", "", "", "", ""],
+        ["", "", "", "", "", "", "", ""],
+        ["", "", "", "", "", "", "", ""]
     ],
-    currentPlayer: Player.Black,
-    winner: null,
-    draw: false
+    currentPlayer: Player.Black, // 初期値を削除
+    winner: null, // 勝者
+    draw: false // 引き分け
 };
