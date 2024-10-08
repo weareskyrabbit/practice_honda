@@ -6,12 +6,14 @@ export enum Player {
 
 // ゲームの状態を表すインターフェース
 export interface GameState {
-    boardWidth: number; // 盤面の幅
-    boardData: string[][]; // 盤面のデータ（二次元配列）
-    currentPlayer: Player; // 現在のプレイヤー
-    winner: Player | null; // 勝者（まだ決まっていない場合はnull）
-    draw: boolean; // 引き分けかどうか
+    boardWidth: number;
+    boardData: string[][];
+    currentPlayer: Player;
+    winner: Player | null;
+    draw: boolean;
+    passCount: number; // パスの回数を追加
 }
+
 
 // タイトル
 export const markGameTitle = () => {
@@ -131,7 +133,7 @@ export const getValidMoves = (boardData: string[][], currentPlayer: Player, boar
 
 // ゲームの初期状態
 export const initialState: GameState = {
-    boardWidth: 8, // 盤面の幅
+    boardWidth: 8,
     boardData: [
         ["", "", "", "", "", "", "", ""],
         ["", "", "", "", "", "", "", ""],
@@ -142,7 +144,8 @@ export const initialState: GameState = {
         ["", "", "", "", "", "", "", ""],
         ["", "", "", "", "", "", "", ""]
     ],
-    currentPlayer: Player.Black, // 初期値を削除
-    winner: null, // 勝者
-    draw: false // 引き分け
+    currentPlayer: Player.Black,
+    winner: null,
+    draw: false,
+    passCount: 0 // パスの初期値
 };

@@ -22,6 +22,7 @@ export const GameStatus: React.FC<GameStatusProps> = ({gameState, onGameResetCli
                 )}{/* 勝者が決まった場合 */}
                 {winner != null && <>{winner}が勝ちました。<br /></>}{/* 引き分けの場合 */}
                 {draw && <>引き分けです。<br /></>}{/* リセットボタン */}
+                <div className={`small`}>※パスが二回続くと相手の勝ち</div>
                 <div className={style.reset} onClick={onGameResetClick}>リセット</div>
             </div>
         </div>

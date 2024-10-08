@@ -36,9 +36,6 @@ export const MarkGameProvider: React.FC<{children: ReactNode}> = ({
         }});
     };
     
-    
-    
-
     const onGameBoardClick = (row: number, col: number) => {
         console.debug('click row=' + row + ' col=' + col); // クリックされたところをデバッグで出力
     
@@ -47,32 +44,54 @@ export const MarkGameProvider: React.FC<{children: ReactNode}> = ({
     
         if (validMoves.length === 0) {
             // パスの通知を表示
-            alert('取れる駒が無いためパスをします。');
-            // プレイヤーを交代
-            dispatch({
-                type: ActionType.updateGameState,
-                payload: {
-                    gameState: { ...gameState, currentPlayer: gameState.currentPlayer === Player.Black ? Player.White : Player.Black }
+            const newPassCount = gameState.passCount + 1;
+            const newCurrentPlayer = gameState.currentPlayer === Player.Black ? Player.White : Player.Black;
+    
+            // パスが2連続で行われた場合の勝利判定
+            if (newPassCount >= 2) {
+                const blackCount = gameState.boardData.flat().filter(cell => cell === Player.Black).length;
+                const whiteCount = gameState.boardData.flat().filter(cell => cell === Player.White).length;
+                const winner = blackCount > whiteCount ? Player.Black : (whiteCount > blackCount ? Player.White : null);
+                const draw = blackCount === whiteCount;
+    
+                if (newPassCount === 2) {
+                    if (winner) {
+                        alert(`${winner}が勝ちました。`);
+                    } else if (draw) {
+                        alert('引き分けです。');
+                    }
                 }
-            });
+    
+                dispatch({
+                    type: ActionType.updateGameState,
+                    payload: {
+                        gameState: { ...gameState, winner, draw, passCount: newPassCount }
+                    }
+                });
+            } else {
+                alert('取れる駒が無いためパスをします。');
+                dispatch({
+                    type: ActionType.updateGameState,
+                    payload: {
+                        gameState: { ...gameState, currentPlayer: newCurrentPlayer, passCount: newPassCount }
+                    }
+                });
+            }
             return;
         }
     
         // クリックされたセルが有効な手の中にあり、かつゲームが終了していない場合
         if (validMoves.some(([r, c]) => r === row && c === col) && gameState.winner == null) {
             // 現在のゲーム状態から必要な情報を取得
-            var boardData = gameState.boardData;
-            var currentPlayer = gameState.currentPlayer;
-            var boardWidth = gameState.boardWidth;
+            let boardData = gameState.boardData;
+            let currentPlayer = gameState.currentPlayer;
+            const boardWidth = gameState.boardWidth;
     
             // マスに現在のプレイヤーの駒を置く
             boardData[row][col] = currentPlayer;
     
             // 挟まれた駒をひっくり返す
             boardData = flipDiscs(boardData, row, col, currentPlayer, boardWidth);
-    
-            // チェンジ
-            currentPlayer = currentPlayer === Player.Black ? Player.White : Player.Black;
     
             // 盤面が全て埋まったかどうかを判定
             const isBoardFull = boardData.flat().every(cell => cell !== '');
@@ -83,11 +102,14 @@ export const MarkGameProvider: React.FC<{children: ReactNode}> = ({
             // 引き分けの判定
             const draw = isBoardFull && winner === null;
     
+            // チェンジ
+            currentPlayer = currentPlayer === Player.Black ? Player.White : Player.Black;
+    
             // 新しいゲーム状態をディスパッチして更新
             dispatch({
                 type: ActionType.updateGameState,
                 payload: {
-                    gameState: { boardWidth, boardData, currentPlayer, winner, draw }
+                    gameState: { boardWidth, boardData, currentPlayer, winner, draw, passCount: 0 } // パスカウントをリセット
                 }
             });
         } else {
