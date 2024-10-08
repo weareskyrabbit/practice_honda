@@ -1,0 +1,15 @@
+.status {
+    font-size: 24px; /* 文字の大きさを24pxに設定 */
+    margin-bottom: 20px; /* 下に隙間を作る */
+}
+
+.reset {
+    font-size: 24px; /* リセットボタンの文字の大きさを24pxに設定 */
+    cursor: pointer; /* カーソルをポインターに変更 */
+    display: inline-block; /* ボタンのサイズをテキストのサイズに合わせる */
+    padding: 5px 10px; /* ボタンの内側の余白を設定 */
+    border: 1px solid #000; /* ボタンの枠線を設定 */
+    background-color: #f0f0f0; /* ボタンの背景色を設定 */
+    border-radius: 5px; /* ボタンの角を丸くする */
+    text-align: center; /* テキストを中央揃え */
+}

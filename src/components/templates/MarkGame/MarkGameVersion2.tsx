@@ -28,8 +28,10 @@ export const MarkGame: React.FC = () => {
             <p className='desc'>MarkGameVersion2.tsx</p>
             リバーシゲーム
             <div className={style.field}>
-                <GameBoard gameState={gameState} onGameBoardClick={onGameBoardClick} />
-                <GameStatus gameState={gameState} onGameResetClick={initMarkGameState} />
+                <div className={style.container}>
+                    <GameBoard gameState={gameState} onGameBoardClick={onGameBoardClick} />
+                    <GameStatus gameState={gameState} onGameResetClick={initMarkGameState} />
+                </div>
             </div>
         </>
     );

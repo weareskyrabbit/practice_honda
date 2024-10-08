@@ -45,7 +45,7 @@ export const MarkGameProvider: React.FC<{children: ReactNode}> = ({
     
         if (validMoves.length === 0) {
             // パスの通知を表示
-            alert('パスする必要があります。');
+            alert('取れる駒が無いためパスをします。');
             // プレイヤーを交代
             dispatch({
                 type: ActionType.updateGameState,

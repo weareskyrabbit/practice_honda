@@ -9,7 +9,7 @@ export interface GameState {
     currentPlayer: Player;
     winner: Player | null;
     draw: boolean;
-    // pass: boolean; // パスの状態を追加（オプション）
+    // pass: boolean; // パスの状態を追加
 }
 
 

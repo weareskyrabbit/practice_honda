@@ -1,3 +1,53 @@
 .field {
     display: flex;
+    flex-direction: column; /* 縦方向に配置 */
+    justify-content: center; /* 中央に配置 */
+    align-items: center; /* 垂直方向にも中央に配置 */
+}
+
+.board {
+    background-color: green; /* 盤面の背景色を緑に設定 */
+    border: 2px solid black; /* 盤面の外枠を黒に設定 */
+    border-collapse: collapse; /* 枠線を重ねる */
+    margin: 20px 0; /* 上下に隙間を作る */
+}
+
+.square {
+    border: 1px solid #999;
+    height: 60px; /* マスの高さを大きく調整 */
+    width: 60px; /* マスの幅を大きく調整 */
+    text-align: center;
+    vertical-align: middle; /* 垂直方向にも中央揃え */
+    font-size: 24px; /* 駒のサイズ */
+    background-color: green; /* 盤面の背景色と同じ色 */
+    user-select: none; /* ドラッグで選択できないように設定 */
+}
+
+.valid-move {
+    background-color: lightgreen; /* 駒が置けるマスの色を明るく設定 */
+}
+
+.square:hover {
+    background-color: green; /* カーソルが乗ったときに盤面と同じ色に設定 */
+}
+
+.status {
+    font-size: 24px; /* 文字の大きさを24pxに設定 */
+    margin-bottom: 20px; /* 下に隙間を作る */
+}
+
+.reset {
+    font-size: 24px; /* リセットボタンの文字の大きさを24pxに設定 */
+    cursor: pointer; /* カーソルをポインターに変更 */
+    display: inline-block; /* ボタンのサイズをテキストのサイズに合わせる */
+    padding: 5px 10px; /* ボタンの内側の余白を設定 */
+    border: 1px solid #000; /* ボタンの枠線を設定 */
+    background-color: #f0f0f0; /* ボタンの背景色を設定 */
+    border-radius: 5px; /* ボタンの角を丸くする */
+    text-align: center; /* テキストを中央揃え */
+}
+
+.container {
+    display: flex;
+    gap: 20px; /* 横の間隔を20pxに設定 */
 }
