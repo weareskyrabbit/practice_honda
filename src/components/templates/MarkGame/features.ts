@@ -20,11 +20,6 @@ export const markGameTitle = () => {
     return 'リバーシゲーム';
 }
 
-// 指定されたマスが空かどうかを判定する関数
-export function isCellEmpty(gameState: GameState, row: number, col: number) {
-    return gameState.boardData[row][col] === '';
-}
-
 // 盤面データをそのまま返す関数（将来的に変換処理を追加する可能性あり）
 export function convertMarkGameCols(boardWidth: number, boardData: string[][]): string[][] {
     return boardData;

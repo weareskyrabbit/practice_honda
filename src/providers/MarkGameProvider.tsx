@@ -1,4 +1,4 @@
-import { getWinner, isCellEmpty, flipDiscs, getValidMoves, initialState, GameState, Player } from "@/components/templates/MarkGame/features";
+import { getWinner, flipDiscs, getValidMoves, initialState, GameState, Player } from "@/components/templates/MarkGame/features";
 import React, { useReducer } from "react";
 import { createContext, ReactNode } from "react";
 
